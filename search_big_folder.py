@@ -29,13 +29,22 @@ class findBigFolder(object):
         founded_dir = ['']
         for dirs in self.search_folders(path):
             try:
-                if not founded_dir[0] in dirs.split(os.sep)[-2:]:
+                if not founded_dir[0] == os.path.dirname(dirs):
                     if 10.00 <= round(self.get_size_dir(dirs) / 1024 / 1024, 2):
                         folder_json[dirs] = '{}MB'.format(round(self.get_size_dir(dirs) / 1024 / 1024, 2))
                         founded_dir[0] = dirs.split(os.sep)[-1]
             except:
                 pass
-        print('\n'.join(sorted(list(set(['{}: {}'.format(key, value) for key, value in folder_json.items()])), reverse=True)))
+        dir_result = []
+        Dir = ['']
+        for key, value in folder_json.items():
+            if not Dir[0] == os.path.dirname(key):
+                dir_result.append('[ {} ]: {}'.format(key, value))
+                Dir[0] = key
+            else:
+                dir_result.append('    |- [ {} ]: {}'.format(key, value))
+                Dir[0] = os.path.dirname(key)
+        print('\n'.join(dir_result))
 
 def main():
     if len(sys.argv) != 2:
